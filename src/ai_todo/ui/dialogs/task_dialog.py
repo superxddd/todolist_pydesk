@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from datetime import datetime
-from tkinter import simpledialog
+from tkinter import messagebox, simpledialog
 
 from ai_todo.core.models import Task
 
@@ -46,7 +46,13 @@ class TaskDialog(simpledialog.Dialog):
         if not title:
             return
         due_text = self.due_var.get().strip()
-        due_at = datetime.strptime(due_text, "%Y-%m-%d %H:%M") if due_text else None
+        due_at = None
+        if due_text:
+            try:
+                due_at = datetime.strptime(due_text, "%Y-%m-%d %H:%M")
+            except ValueError:
+                messagebox.showerror("格式错误", "截止时间格式应为 YYYY-MM-DD HH:MM")
+                return
         task = self.task or Task.create(title=title)
         task.title = title
         task.description = self.desc_text.get("1.0", "end").strip()
