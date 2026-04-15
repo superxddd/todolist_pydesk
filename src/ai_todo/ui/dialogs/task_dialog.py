@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
 import tkinter as tk
+from datetime import datetime
 from tkinter import simpledialog
 
 from ai_todo.core.models import Task
@@ -23,17 +23,22 @@ class TaskDialog(simpledialog.Dialog):
         self.title_var = tk.StringVar(value=self.task.title if self.task else "")
         self.desc_text = tk.Text(master, width=40, height=6)
         self.priority_var = tk.StringVar(value=self.task.priority if self.task else "medium")
-        self.due_var = tk.StringVar(
-            value=self.task.due_at.strftime("%Y-%m-%d %H:%M") if self.task and self.task.due_at else ""
-        )
+        due_value = ""
+        if self.task and self.task.due_at:
+            due_value = self.task.due_at.strftime("%Y-%m-%d %H:%M")
+        self.due_var = tk.StringVar(value=due_value)
         self.tags_var = tk.StringVar(value=",".join(self.task.tags) if self.task else "")
 
-        tk.Entry(master, textvariable=self.title_var, width=42).grid(row=0, column=1, sticky="ew", pady=2)
+        title_entry = tk.Entry(master, textvariable=self.title_var, width=42)
+        title_entry.grid(row=0, column=1, sticky="ew", pady=2)
         self.desc_text.grid(row=1, column=1, sticky="ew", pady=2)
         self.desc_text.insert("1.0", self.task.description if self.task else "")
-        tk.OptionMenu(master, self.priority_var, "high", "medium", "low").grid(row=2, column=1, sticky="w")
-        tk.Entry(master, textvariable=self.due_var, width=42).grid(row=3, column=1, sticky="ew", pady=2)
-        tk.Entry(master, textvariable=self.tags_var, width=42).grid(row=4, column=1, sticky="ew", pady=2)
+        priority_menu = tk.OptionMenu(master, self.priority_var, "high", "medium", "low")
+        priority_menu.grid(row=2, column=1, sticky="w")
+        due_entry = tk.Entry(master, textvariable=self.due_var, width=42)
+        due_entry.grid(row=3, column=1, sticky="ew", pady=2)
+        tags_entry = tk.Entry(master, textvariable=self.tags_var, width=42)
+        tags_entry.grid(row=4, column=1, sticky="ew", pady=2)
         return master
 
     def apply(self):

@@ -15,16 +15,29 @@ class TaskListPanel(ttk.Frame):
         self.search_var = tk.StringVar()
         self.status_var = tk.StringVar(value="all")
 
-        ttk.Label(self, text="任务列表", style="Section.TLabel").pack(anchor="w", padx=8, pady=(8, 4))
+        ttk.Label(
+            self,
+            text="任务列表",
+            style="Section.TLabel",
+        ).pack(anchor="w", padx=8, pady=(8, 4))
         search_entry = ttk.Entry(self, textvariable=self.search_var)
         search_entry.pack(fill="x", padx=8)
-        search_entry.bind("<KeyRelease>", lambda _event: self.on_select(None, refresh_only=True))
+        search_entry.bind(
+            "<KeyRelease>",
+            lambda _event: self.on_select(None, refresh_only=True),
+        )
 
         status_box = ttk.Combobox(
-            self, textvariable=self.status_var, values=["all", "todo", "doing", "done"], state="readonly"
+            self,
+            textvariable=self.status_var,
+            values=["all", "todo", "doing", "done"],
+            state="readonly",
         )
         status_box.pack(fill="x", padx=8, pady=8)
-        status_box.bind("<<ComboboxSelected>>", lambda _event: self.on_select(None, refresh_only=True))
+        status_box.bind(
+            "<<ComboboxSelected>>",
+            lambda _event: self.on_select(None, refresh_only=True),
+        )
 
         self.listbox = tk.Listbox(self, activestyle="dotbox")
         self.listbox.pack(fill="both", expand=True, padx=8, pady=(0, 8))

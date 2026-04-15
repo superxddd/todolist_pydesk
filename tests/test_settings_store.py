@@ -1,5 +1,3 @@
-import os
-
 from ai_todo.storage.settings_store import SettingsRepository
 
 

@@ -32,25 +32,45 @@ class AISuggestionDialog(simpledialog.Dialog):
         )
         self.priority_combo.grid(row=1, column=1, sticky="w", pady=(0, 8))
 
-        ttk.Label(master, text="执行顺序").grid(row=2, column=0, sticky="nw", padx=(0, 8), pady=(0, 8))
+        ttk.Label(master, text="执行顺序").grid(
+            row=2,
+            column=0,
+            sticky="nw",
+            padx=(0, 8),
+            pady=(0, 8),
+        )
         self.execution_text = tk.Text(master, width=70, height=6)
         self.execution_text.grid(row=2, column=1, sticky="nsew", pady=(0, 8))
         self.execution_text.insert("1.0", "\n".join(self.suggestion.execution_order))
 
-        ttk.Label(master, text="子任务").grid(row=3, column=0, sticky="nw", padx=(0, 8), pady=(0, 8))
+        ttk.Label(master, text="子任务").grid(
+            row=3,
+            column=0,
+            sticky="nw",
+            padx=(0, 8),
+            pady=(0, 8),
+        )
         self.subtasks_text = tk.Text(master, width=70, height=10)
         self.subtasks_text.grid(row=3, column=1, sticky="nsew", pady=(0, 8))
         self.subtasks_text.insert("1.0", "\n".join(item.title for item in self.suggestion.subtasks))
 
         helper = "每行一项。你可以直接改写、删减或补充内容，再点“采纳全部”。"
         ttk.Label(master, text=helper, foreground="#666666").grid(
-            row=4, column=0, columnspan=2, sticky="w"
+            row=4,
+            column=0,
+            columnspan=2,
+            sticky="w",
         )
         return self.summary_text
 
     def buttonbox(self):
         box = tk.Frame(self)
-        tk.Button(box, text="采纳全部", width=10, command=self._accept).pack(side="left", padx=5, pady=5)
+        tk.Button(
+            box,
+            text="采纳全部",
+            width=10,
+            command=self._accept,
+        ).pack(side="left", padx=5, pady=5)
         tk.Button(box, text="关闭", width=10, command=self.cancel).pack(side="left", padx=5, pady=5)
         box.pack()
 

@@ -52,7 +52,7 @@ class MainWindow:
     def _build_layout(self) -> None:
         toolbar = ttk.Frame(self.root)
         toolbar.pack(fill="x", padx=8, pady=8)
-        for text, command in [
+        actions = [
             ("AI 快速添加", self.ai_quick_add),
             ("新建任务", self.create_task),
             ("编辑任务", self.edit_task),
@@ -60,7 +60,8 @@ class MainWindow:
             ("删除任务", self.delete_task),
             ("AI 拆解", self.generate_ai_plan),
             ("设置", self.open_settings),
-        ]:
+        ]
+        for text, command in actions:
             ttk.Button(toolbar, text=text, command=command).pack(side="left", padx=(0, 6))
 
         body = ttk.Frame(self.root)
@@ -78,7 +79,8 @@ class MainWindow:
         self.today_panel.grid(row=0, column=2, sticky="nsew", padx=(4, 8), pady=(0, 8))
 
         self.status_var = tk.StringVar(value="准备就绪")
-        ttk.Label(self.root, textvariable=self.status_var, anchor="w").pack(fill="x", padx=8, pady=(0, 8))
+        status_label = ttk.Label(self.root, textvariable=self.status_var, anchor="w")
+        status_label.pack(fill="x", padx=8, pady=(0, 8))
 
     def refresh(self) -> None:
         tasks = self.repository.list()
@@ -120,11 +122,11 @@ class MainWindow:
             self.refresh()
 
     def ai_quick_add(self) -> None:
-        user_input = simpledialog.askstring(
-            "AI 快速添加",
-            "直接告诉 AI 你接下来要做什么。\n例如：今天下午把 trae 的豆包模型接入测完，并整理一份结果。",
-            parent=self.root,
+        prompt = (
+            "直接告诉 AI 你接下来要做什么。\n"
+            "例如：今天下午把 trae 的豆包模型接入测完，并整理一份结果。"
         )
+        user_input = simpledialog.askstring("AI 快速添加", prompt, parent=self.root)
         if not user_input:
             return
         try:
@@ -146,7 +148,8 @@ class MainWindow:
         if task.ai_notes:
             preview.extend(["", f"AI 备注：{task.ai_notes}"])
 
-        if messagebox.askyesno("确认添加任务", "\n".join(preview) + "\n\n是否加入待办列表？"):
+        confirm_text = "\n".join(preview) + "\n\n是否加入待办列表？"
+        if messagebox.askyesno("确认添加任务", confirm_text):
             self.repository.save(task)
             self.current_task = task
             self.refresh()

@@ -14,9 +14,11 @@ class TaskRepository:
         self.file_path = file_path
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         if not self.file_path.exists():
-            self._write_payload(
-                {"app_version": TASKS_SCHEMA_VERSION, "tasks": [task.to_dict() for task in build_sample_tasks()]}
-            )
+            payload = {
+                "app_version": TASKS_SCHEMA_VERSION,
+                "tasks": [task.to_dict() for task in build_sample_tasks()],
+            }
+            self._write_payload(payload)
 
     def _read_payload(self) -> dict[str, Any]:
         try:
@@ -26,7 +28,8 @@ class TaskRepository:
         return normalize_tasks_payload(payload)
 
     def _write_payload(self, payload: dict[str, Any]) -> None:
-        self.file_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        content = json.dumps(payload, ensure_ascii=False, indent=2)
+        self.file_path.write_text(content, encoding="utf-8")
 
     def list(self) -> list[Task]:
         payload = self._read_payload()
@@ -48,12 +51,24 @@ class TaskRepository:
                 break
         if not replaced:
             tasks.append(task)
-        self._write_payload({"app_version": TASKS_SCHEMA_VERSION, "tasks": [item.to_dict() for item in tasks]})
+        payload = {
+            "app_version": TASKS_SCHEMA_VERSION,
+            "tasks": [item.to_dict() for item in tasks],
+        }
+        self._write_payload(payload)
         return task
 
     def delete(self, task_id: str) -> None:
         tasks = [task for task in self.list() if task.id != task_id]
-        self._write_payload({"app_version": TASKS_SCHEMA_VERSION, "tasks": [item.to_dict() for item in tasks]})
+        payload = {
+            "app_version": TASKS_SCHEMA_VERSION,
+            "tasks": [item.to_dict() for item in tasks],
+        }
+        self._write_payload(payload)
 
     def bulk_update(self, tasks: list[Task]) -> None:
-        self._write_payload({"app_version": TASKS_SCHEMA_VERSION, "tasks": [item.to_dict() for item in tasks]})
+        payload = {
+            "app_version": TASKS_SCHEMA_VERSION,
+            "tasks": [item.to_dict() for item in tasks],
+        }
+        self._write_payload(payload)

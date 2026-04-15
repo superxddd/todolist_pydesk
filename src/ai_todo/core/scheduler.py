@@ -18,7 +18,11 @@ class SchedulerService:
 
     def overdue(self, tasks: list[Task]) -> list[Task]:
         now = self.now()
-        return [task for task in tasks if task.due_at and task.due_at < now and task.status != "done"]
+        return [
+            task
+            for task in tasks
+            if task.due_at and task.due_at < now and task.status != "done"
+        ]
 
     def completed_today(self, tasks: list[Task]) -> list[Task]:
         today = self.now().date()

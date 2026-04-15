@@ -178,7 +178,13 @@ JSON 结构必须为：
             for item in payload.get("subtasks", [])
             if isinstance(item, dict) and item.get("title")
         ]
-        task = Task.create(title=title, description=description, priority=priority, due_at=due_at, tags=tags)
+        task = Task.create(
+            title=title,
+            description=description,
+            priority=priority,
+            due_at=due_at,
+            tags=tags,
+        )
         task.subtasks = subtasks
         task.ai_notes = str(payload.get("summary", "")).strip()
         return task
@@ -208,7 +214,11 @@ JSON 结构必须为：
         if priority not in {"high", "medium", "low"}:
             priority = "medium"
 
-        execution_order = [str(item).strip() for item in payload.get("execution_order", []) if str(item).strip()]
+        execution_order = [
+            str(item).strip()
+            for item in payload.get("execution_order", [])
+            if str(item).strip()
+        ]
         if not execution_order:
             execution_order = [item.title for item in subtasks]
 
@@ -226,9 +236,9 @@ JSON 结构必须为：
             cleaned = cleaned.rsplit("```", 1)[0]
         try:
             return json.loads(cleaned)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as exc:
             start = cleaned.find("{")
             end = cleaned.rfind("}")
             if start != -1 and end != -1 and start < end:
                 return json.loads(cleaned[start : end + 1])
-            raise ValueError("AI 返回内容不是合法 JSON。")
+            raise ValueError("AI 返回内容不是合法 JSON。") from exc

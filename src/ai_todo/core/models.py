@@ -31,7 +31,7 @@ class SubTask:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "SubTask":
+    def from_dict(cls, payload: dict[str, Any]) -> SubTask:
         return cls(title=payload["title"], done=payload.get("done", False))
 
 
@@ -57,7 +57,7 @@ class Task:
         priority: str = "medium",
         due_at: datetime | None = None,
         tags: list[str] | None = None,
-    ) -> "Task":
+    ) -> Task:
         return cls(
             id=str(uuid4()),
             title=title,
@@ -87,7 +87,7 @@ class Task:
         }
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "Task":
+    def from_dict(cls, payload: dict[str, Any]) -> Task:
         return cls(
             id=payload["id"],
             title=payload["title"],
@@ -142,8 +142,13 @@ class AppSettings:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "AppSettings":
+    def from_dict(cls, payload: dict[str, Any]) -> AppSettings:
         return cls(**{**cls().to_dict(), **payload})
 
-    def with_overrides(self, **overrides: Any) -> "AppSettings":
-        return replace(self, **{key: value for key, value in overrides.items() if value not in (None, "")})
+    def with_overrides(self, **overrides: Any) -> AppSettings:
+        filtered = {
+            key: value
+            for key, value in overrides.items()
+            if value not in (None, "")
+        }
+        return replace(self, **filtered)

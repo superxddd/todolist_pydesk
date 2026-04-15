@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from threading import Thread
-from typing import Callable
 
 
 @dataclass(slots=True)
@@ -30,7 +30,10 @@ class TrayService:
             return image
 
         menu = pystray.Menu(
-            pystray.MenuItem("显示主窗口", lambda _icon=None, _item=None: callbacks.show_main_window()),
+            pystray.MenuItem(
+                "显示主窗口",
+                lambda _icon=None, _item=None: callbacks.show_main_window(),
+            ),
             pystray.MenuItem("退出", lambda _icon=None, _item=None: callbacks.quit_application()),
         )
         self._icon = pystray.Icon("ai-todo", create_image(), "AI Todo", menu)

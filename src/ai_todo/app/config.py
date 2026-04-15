@@ -15,5 +15,5 @@ class AppConfig:
     test_mode: bool = False
 
     @classmethod
-    def for_runtime(cls, test_mode: bool = False, root: Path | None = None) -> "AppConfig":
+    def for_runtime(cls, test_mode: bool = False, root: Path | None = None) -> AppConfig:
         return cls(paths=default_paths(root=root), test_mode=test_mode)
