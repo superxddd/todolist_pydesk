@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from datetime import datetime
-from tkinter import simpledialog
+from tkinter import messagebox, simpledialog
 
 from ai_todo.core.models import Task
 
@@ -40,6 +40,16 @@ class TaskDialog(simpledialog.Dialog):
         tags_entry = tk.Entry(master, textvariable=self.tags_var, width=42)
         tags_entry.grid(row=4, column=1, sticky="ew", pady=2)
         return master
+
+    def validate(self):
+        due_text = self.due_var.get().strip()
+        if due_text:
+            try:
+                datetime.strptime(due_text, "%Y-%m-%d %H:%M")
+            except ValueError:
+                messagebox.showerror("格式错误", "截止时间格式应为 YYYY-MM-DD HH:MM")
+                return False
+        return True
 
     def apply(self):
         title = self.title_var.get().strip()
