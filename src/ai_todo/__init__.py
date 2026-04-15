@@ -1,0 +1,3 @@
+from ai_todo.app.version import __version__
+
+__all__ = ["__version__"]

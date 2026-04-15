@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Build executable
+        run: pyinstaller --noconfirm --windowed --paths src --name ai-todo --collect-all pystray --collect-all PIL src/ai_todo/app/main.py
+      - name: Archive build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-todo-windows
+          path: dist/ai-todo/**
+      - name: Publish release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/ai-todo/**
